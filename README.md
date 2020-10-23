@@ -159,7 +159,7 @@ Since you don't want that wait time when working in Xcode, when running previews
 
 Take a look how you can design a (mediocre) social feed in minutes with Dummy!
 
-![Imgur](https://i.imgur.com/3LOwyzw.gifv)
+![Screencast](https://i.imgur.com/3LOwyzw.gif)
 
 
 
