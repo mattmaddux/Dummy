@@ -57,7 +57,7 @@ struct UserInfoView: View {
 }
 ```
 
-[Preview Canvas Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Users.png)
+![Users Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Users.png)
 
 #### Snippets
 
@@ -77,7 +77,7 @@ struct SnippetView: View {
 }
 ```
 
-[Preview Canvas Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Snippets.png)
+![Snippets Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Snippets.png)
 
 #### Photos
 
@@ -103,7 +103,7 @@ struct PhotoView: View {
 }
 ```
 
-[Preview Canvas Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Photos.png)
+![Photos Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Photos.png)
 
 #### Videos
 
@@ -131,7 +131,7 @@ struct VideoView: View {
     }
 }
 ```
-[Preview Canvas Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Videos.png)
+![Videos Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Videos.png)
 
 #### Custom Settings
 
@@ -146,16 +146,13 @@ Dummy(itemCount: 10,                                   // Number of items to loa
       loadElements: [.user, .snippet, .photo])         // Which elements to load dynaimcally from the web. Excluded elements show preview placeholder
 ```
 
-[Preview Canvas Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Previews.png)
 
 #### Previews
 
 Because it's all loaded at launch, inital load can take a while, but once it's loaded it performs nicely.
 Since you don't want that wait time when working in Xcode, when running previews samples are displayed instead.
 
-// IMAGE HERE
-
-
+![Preview Canvas Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Previews.png)
 
 
 #### Screencast
