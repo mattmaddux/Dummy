@@ -8,19 +8,6 @@ import Foundation
 
 class API {
     
-    // ======================================================= //
-    // MARK: - Sub Types
-    // ======================================================= //
-    
-    enum Method: String {
-        case get = "GET"
-        case put = "PUT"
-        case post = "POST"
-        case patch = "PATCH"
-        case delete = "DELETE"
-        
-    }
-    
     struct APIResponse {
         var statusCode: HTTPStatusCode?
         var headers: URLResponse?
@@ -62,27 +49,27 @@ class API {
     // MARK: - Methods
     // ======================================================= //
     
-    func get<ResponseBody: Codable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String: String] = [String:String](), responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
-        try self.makeRequest(ofType: API.Method.get, atURL: url, withQueries: queries, andHeaders: headers, andBody: nil as ResponseBody?, responseType: responseType, completion: completion)
-    }
+//    func get<ResponseBody: Decodable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String: String] = [String:String](), responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
+//        try self.makeRequest(atURL: url, withQueries: queries, andHeaders: headers, responseType: responseType, completion: completion)
+//    }
     
-    func put<RequestBody: Codable, ResponseBody:Codable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String: String] = [String:String](), andBody body: RequestBody?, responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
-        try self.makeRequest(ofType: API.Method.put, atURL: url, withQueries: queries, andHeaders: headers, andBody: body, responseType: responseType, completion: completion)
-    }
+//    func put<RequestBody: Codable, ResponseBody:Codable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String: String] = [String:String](), andBody body: RequestBody?, responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
+//        try self.makeRequest(ofType: API.Method.put, atURL: url, withQueries: queries, andHeaders: headers, andBody: body, responseType: responseType, completion: completion)
+//    }
+//
+//    func post<RequestBody: Codable, ResponseBody:Codable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String: String] = [String:String](), andBody body: RequestBody?, responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
+//        try self.makeRequest(ofType: API.Method.post, atURL: url, withQueries: queries, andHeaders: headers, andBody: body, responseType: responseType, completion: completion)
+//    }
+//
+//    func patch<RequestBody: Codable, ResponseBody:Codable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String: String] = [String:String](), andBody body: RequestBody?, responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
+//        try self.makeRequest(ofType: API.Method.patch, atURL: url, withQueries: queries, andHeaders: headers, andBody: body, responseType: responseType, completion: completion)
+//    }
+//
+//    func delete<ResponseBody: Codable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String: String] = [String:String](), responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
+//        try self.makeRequest(ofType: API.Method.delete, atURL: url, withQueries: queries, andHeaders: headers, andBody: nil as ResponseBody?, responseType: responseType, completion: completion)
+//    }
     
-    func post<RequestBody: Codable, ResponseBody:Codable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String: String] = [String:String](), andBody body: RequestBody?, responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
-        try self.makeRequest(ofType: API.Method.post, atURL: url, withQueries: queries, andHeaders: headers, andBody: body, responseType: responseType, completion: completion)
-    }
-    
-    func patch<RequestBody: Codable, ResponseBody:Codable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String: String] = [String:String](), andBody body: RequestBody?, responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
-        try self.makeRequest(ofType: API.Method.patch, atURL: url, withQueries: queries, andHeaders: headers, andBody: body, responseType: responseType, completion: completion)
-    }
-    
-    func delete<ResponseBody: Codable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String: String] = [String:String](), responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
-        try self.makeRequest(ofType: API.Method.delete, atURL: url, withQueries: queries, andHeaders: headers, andBody: nil as ResponseBody?, responseType: responseType, completion: completion)
-    }
-    
-    func makeRequest<RequestBody: Codable, ResponseBody: Codable>(ofType method: Method, atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String:String]?, andBody body: RequestBody?, responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
+    func get<ResponseBody: Decodable>(atURL url: URL, withQueries queries: [String: String] = [String:String](), andHeaders headers: [String:String] = [String:String](), responseType: ResponseBody.Type, completion: @escaping (ResponseBody?, APIResponse) -> Void ) throws {
         var components = URLComponents()
         components.scheme = url.scheme
         components.host = url.host
@@ -93,15 +80,11 @@ class API {
         
         // Create & Configure Request
         var request = URLRequest(url: components.url!)
-        request.httpMethod = method.rawValue
-        if let body = body {
-            request.httpBody = try encoder.encode(body)
-        }
+        
+        request.httpMethod = "GET"
         request.addValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        if let headers = headers {
-            for (key, value) in headers {
-                request.addValue(value, forHTTPHeaderField: key)
-            }
+        for (key, value) in headers {
+            request.addValue(value, forHTTPHeaderField: key)
         }
         request.httpShouldHandleCookies = false
         request.allowsCellularAccess = true
