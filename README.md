@@ -57,7 +57,7 @@ struct UserInfoView: View {
 }
 ```
 
-![Users Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Users.png)
+![Users Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/main/Resources/Photos.png)
 
 #### Snippets
 
@@ -77,7 +77,7 @@ struct SnippetView: View {
 }
 ```
 
-![Snippets Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Snippets.png)
+![Snippets Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/main/Resources/Snippets.png)
 
 #### Photos
 
@@ -103,7 +103,7 @@ struct PhotoView: View {
 }
 ```
 
-![Photos Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Photos.png)
+![Photos Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/main/Resources/Photos.png)
 
 #### Videos
 
@@ -131,7 +131,7 @@ struct VideoView: View {
     }
 }
 ```
-![Videos Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Videos.png)
+![Videos Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/main/Resources/Videos.png)
 
 #### Custom Settings
 
@@ -152,14 +152,14 @@ Dummy(itemCount: 10,                                   // Number of items to loa
 Because it's all loaded at launch, inital load can take a while, but once it's loaded it performs nicely.
 Since you don't want that wait time when working in Xcode, when running previews samples are displayed instead.
 
-![Preview Canvas Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/master/Resources/Previews.png)
+![Preview Canvas Screenshot](https://raw.githubusercontent.com/mattmaddux/Dummy/main/Resources/Previews.png)
 
 
 #### Screencast
 
 Take a look how you can design a (mediocre) social feed in minutes with Dummy!
 
-[Imgur](https://i.imgur.com/3LOwyzw.gifv)
+![Imgur](https://i.imgur.com/3LOwyzw.gifv)
 
 
 
