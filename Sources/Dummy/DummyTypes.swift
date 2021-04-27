@@ -29,14 +29,17 @@ public struct DummyItem: Decodable, Identifiable {
     public var snippet: String
     public var photo: DummyPhoto
     public var video: DummyVideo
+    public var date: Date
     
 }
+
+public protocol DummyData { }
 
 // ======================================================= //
 // MARK: - Users
 // ======================================================= //
 
-public struct DummyUser: Decodable, Identifiable {
+public struct DummyUser: Decodable, Identifiable, DummyData {
     
     // ======================================================= //
     // MARK: - Sub-Types
@@ -46,7 +49,7 @@ public struct DummyUser: Decodable, Identifiable {
         case male, female
     }
     
-    public enum Nationality: String, Decodable {
+    public enum Nationality: String, CaseIterable, Decodable {
         case AU, BR, CA, CH, DE, DK, ES, FI, FR, GB, IE, IR, NO, NL, NZ, TR, US
     }
     
@@ -55,21 +58,77 @@ public struct DummyUser: Decodable, Identifiable {
         public let first: String
         public let last: String
         public var full: String { "\(first) \(last)" }
+        
+        public init(title: String?, first: String, last: String) {
+            self.title = title
+            self.first = first
+            self.last = last
+        }
+        
+        public init(fromString source: String) {
+            let array = source.split(separator: ":").map { String($0) }
+            self.title = array[0] != "nil" ? array[0] : nil
+            self.first = array[1]
+            self.last = array[2]
+        }
+        
+        var string: String { [title ?? "nil", first, last].joined(separator: ":") }
     }
     
     public struct Street: Decodable {
         public let number: Int
         public let name: String
+        
+        public init(number: Int, name: String) {
+            self.number = number
+            self.name = name
+        }
+        
+        public init(fromString source: String) {
+            let array = source.split(separator: "#").map { String($0) }
+            number = Int(array[0])!
+            name = array[1]
+        }
+        
+        var string: String { [String(number), name].joined(separator: "#") }
     }
     
     public struct Coordinates: Decodable {
         public let latitude: String
         public let longitude: String
+        
+        public init(latitude: String, longitude: String) {
+            self.latitude = latitude
+            self.longitude = longitude
+        }
+        
+        public init(fromString source: String) {
+            let array = source.split(separator: "*").map { String($0) }
+            latitude = array[0]
+            longitude = array[1]
+        }
+        
+        var string: String { [latitude, longitude].joined(separator: "*") }
     }
     
     public struct Timezone: Decodable {
         public let offset: String
         public let description: String
+        
+        public init(offset: String, description: String) {
+            self.offset = offset
+            self.description = description
+        }
+        
+        public init(fromString source: String) {
+            let array = source.split(separator: "^").map { String($0) }
+            offset = array[0]
+            description = array[1]
+        }
+        
+        var string: String {
+            [offset, description].joined(separator: "^")
+        }
     }
     
     public struct Login: Decodable {
@@ -80,16 +139,66 @@ public struct DummyUser: Decodable, Identifiable {
         public let md5: String
         public let sha1: String
         public let sha256: String
+        
+        public init(uuid: String, username: String, password: String, salt: String, md5: String, sha1: String, sha256: String) {
+            self.uuid = uuid
+            self.username = username
+            self.password = password
+            self.salt = salt
+            self.md5 = md5
+            self.sha1 = sha1
+            self.sha256 = sha256
+        }
+        
+        public init(fromString source: String) {
+            let array = source.split(separator: ":").map { String($0) }
+            self.uuid = array[0]
+            self.username = array[1]
+            self.password = array[2]
+            self.salt = array[3]
+            self.md5 = array[4]
+            self.sha1 = array[5]
+            self.sha256 = array[6]
+        }
+        
+        var string: String { [uuid, username, password, salt, md5, sha1, sha256].joined(separator: ":") }
     }
     
     public struct Age: Decodable {
         public let date: Date
         public let age: Int
+        
+        public init(date: Date, age: Int) {
+            self.date = date
+            self.age = age
+        }
+        
+        public init(fromString source: String) {
+            let array = source.split(separator: ":").map { String($0) }
+            self.date = Date(timeIntervalSince1970: Double(array[0])!)
+            self.age = Int(array[1])!
+        }
+        
+        var string: String { [String(date.timeIntervalSince1970), String(age)].joined(separator: ":") }
+        
     }
     
     public struct Identification: Decodable {
         public let name: String?
         public let value: String?
+        
+        public init(name: String?, value: String?) {
+            self.name = name
+            self.value = value
+        }
+        
+        public init(fromString source: String) {
+            let array = source.split(separator: ":").map { String($0) }
+            self.name = array[0] != "nil" ? array[0] : nil
+            self.value = array[0] != "nil" ? array[0] : nil
+        }
+        
+        var string: String { [name ?? "nil", value ?? "nil"].joined(separator: ":") }
     }
     
     public struct ImageSet: Decodable {
@@ -129,12 +238,25 @@ public struct DummyUser: Decodable, Identifiable {
             self.timezone = timezone
         }
         
+        public init(fromString source: String) {
+            let array = source.split(separator: "!").map { String($0) }
+            self.street = Street(fromString: array[0])
+            self.city = array[1]
+            self.state = array[2]
+            self.postcode = array[3]
+            self.coordinates = Coordinates(fromString: array[4])
+            self.timezone = Timezone(fromString: array[5])
+        }
+        
+        var string: String { [street.string, city, state, postcode, coordinates.string, timezone.string].joined(separator: "!") }
+        
         public let street: Street
         public let city: String
         public let state: String
         public let postcode: String
         public let coordinates: Coordinates
         public let timezone: Timezone
+        public var address: String { return "\(street.number) \(street.name), \(city), \(state), \(postcode)"}
     }
     
     
@@ -146,8 +268,10 @@ public struct DummyUser: Decodable, Identifiable {
         case gender, name, location, email, login, dob, registered, phone, cell, nat, id, picture
     }
     
+    
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = UUID()
         self.gender = try container.decode(Gender.self, forKey: .gender)
         self.name = try container.decode(Name.self, forKey: .name)
         self.location = try container.decode(Location.self, forKey: .location)
@@ -160,10 +284,12 @@ public struct DummyUser: Decodable, Identifiable {
         self.identification = try container.decode(Identification.self, forKey: .id)
         self.nationality = try container.decode(Nationality.self, forKey: .nat)
         let imageSet = try container.decode(ImageSet.self, forKey: .picture)
-        self.profilePicture = Image.from(url: imageSet.large)
+        self.profilePictureData = try? Data(contentsOf: imageSet.large)
+        self.storedProfilePicture = nil
     }
     
     public init(gender: Gender, name: Name, location: Location, email: String, login: Login, dob: Age, registered: Age, phone: String, cell: String, identification: Identification, nationality: Nationality, profilePicture: Image) {
+        self.id = UUID()
         self.gender = gender
         self.name = name
         self.location = location
@@ -175,14 +301,15 @@ public struct DummyUser: Decodable, Identifiable {
         self.cell = cell
         self.identification = identification
         self.nationality = nationality
-        self.profilePicture = profilePicture
+        self.storedProfilePicture = profilePicture
+        self.profilePictureData = nil
     }
     
     // ======================================================= //
     // MARK: - Properties
     // ======================================================= //
     
-    public let id: UUID = UUID()
+    public let id: UUID
     public let gender: Gender
     public let name: Name
     public let location: Location
@@ -194,8 +321,50 @@ public struct DummyUser: Decodable, Identifiable {
     public let cell: String
     public let identification: Identification
     public let nationality: Nationality
-    public let profilePicture: Image
+    public var profilePictureData: Data?
+    public let storedProfilePicture: Image?
+    public var profilePicture: Image {
+        if let profilePictureData = profilePictureData {
+            return Image(uiImage: UIImage(data: profilePictureData)!)
+        } else if let storedProfilePicture = storedProfilePicture {
+            return storedProfilePicture
+        } else {
+            return Image(systemName: "user")
+        }
+    }
     
+    
+    public init(fromDict source: [String:String]) {
+        self.id = UUID(uuidString: source["id"]!)!
+        self.gender = Gender(rawValue: source["gender"]!)!
+        self.name = Name(fromString: source["name"]!)
+        self.location = Location(fromString: source["location"]!)
+        self.email = source["email"]!
+        self.login = Login(fromString: source["login"]!)
+        self.dob = Age(fromString: source["dob"]!)
+        self.registered = Age(fromString: source["registered"]!)
+        self.phone = source["phone"]!
+        self.cell = source["cell"]!
+        self.identification = Identification(fromString: source["identification"]!)
+        self.nationality = Nationality(rawValue: source["nationality"]!)!
+        self.profilePictureData = nil
+        self.storedProfilePicture = nil
+    }
+    
+    var dict: [String:String] {
+        ["id": id.uuidString,
+         "gender": gender.rawValue,
+         "name": name.string,
+         "location": location.string,
+         "email": email,
+         "login": login.string,
+         "dob": dob.string,
+         "registered": registered.string,
+         "phone": phone,
+         "cell": cell,
+         "identification": identification.string,
+         "nationality": nationality.rawValue]
+    }
 }
 
 public struct DummyUserInfo: Decodable {
@@ -217,8 +386,12 @@ public struct DummyUserResponse: Decodable {
 // MARK: - Snippets
 // ======================================================= //
 
+typealias DummySnippet = String
+
+extension DummySnippet: DummyData { }
+
 public enum SnippetParagraphLength: String, CaseIterable {
-    case short, medium, long, veryLong
+    case short, medium, long, veryLong = "very long"
 }
 
 public enum SnippetOptions: String  {
@@ -256,7 +429,7 @@ public struct DummyPhotoResponse: Decodable {
     
 }
 
-public struct DummyPhoto: Decodable, Identifiable {
+public struct DummyPhoto: Decodable, Identifiable, DummyData {
     
     
     public enum Size: String, Decodable, CaseIterable {
@@ -276,7 +449,17 @@ public struct DummyPhoto: Decodable, Identifiable {
     public let id: Int
     public let width: Int
     public let height: Int
-    public let image: Image
+    public var imageData: Data?
+    public var storedImage: Image?
+    public var image: Image {
+        if let imageData = imageData {
+            return Image(uiImage: UIImage(data: imageData)!)
+        } else if let storedImage = storedImage {
+            return storedImage
+        } else {
+            return Image(systemName: "photo")
+        }
+    }
     
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -287,14 +470,30 @@ public struct DummyPhoto: Decodable, Identifiable {
                                 try container.decode(Dictionary<String, String>.self, forKey: .src)
                                     .map()  { ( Size(rawValue: $0)!, URL(string: $1)! ) }
         )
-        self.image = Image.from(url: allSizes[.original]!)
+        self.imageData = try? Data(contentsOf: allSizes[.original]!)
+        self.storedImage = nil
     }
     
     public init(id: Int, width: Int, height: Int, image: Image) {
         self.id = id
         self.width = width
         self.height = height
-        self.image = image
+        self.storedImage = image
+        self.imageData = nil
+    }
+    
+    public init(fromDict dict: [String:String]) {
+        self.id = Int(dict["id"]!)!
+        self.width = Int(dict["width"]!)!
+        self.height = Int(dict["height"]!)!
+        self.imageData = nil
+        self.storedImage = nil
+    }
+    
+    var dict: [String: String] {
+        ["id": String(id),
+         "width": String(width),
+         "height": String(height)]
     }
 
 }
@@ -320,7 +519,7 @@ public struct DummyVideoResponse: Decodable {
     
 }
 
-public struct DummyVideo: Decodable {
+public struct DummyVideo: Decodable, Identifiable, DummyData {
     
     public struct Version: Decodable {
         
@@ -353,7 +552,20 @@ public struct DummyVideo: Decodable {
     public let width: Int
     public let height: Int
     public let duration: Int
-    public var screenshot: Image
+    
+    public var screenshotData: Data?
+    public var storedScreenshot: Image?
+    
+    public var screenshot: Image {
+        if let screenshotData = screenshotData {
+            return Image(uiImage: UIImage(data: screenshotData)!)
+        } else if let storedScreenshot = storedScreenshot {
+            return storedScreenshot
+        } else {
+            return Image(systemName: "video")
+        }
+    }
+    
     public var url: URL
     
     public init(from decoder: Decoder) throws {
@@ -366,7 +578,8 @@ public struct DummyVideo: Decodable {
         let allVersions = try container.decode([Version].self, forKey: .video_files)
         
         // Get Image
-        self.screenshot = Image.from(url: screenshotURL)
+        self.screenshotData = try? Data(contentsOf: screenshotURL)
+        self.storedScreenshot = nil
         
         // Select URL
         let selected = allVersions.first() { $0.quality == .hls } ?? allVersions.max() { $0.height ?? 0 < $1.height ?? 0 }!
@@ -378,8 +591,28 @@ public struct DummyVideo: Decodable {
         self.width = width
         self.height = height
         self.duration = duration
-        self.screenshot = screenshot
+        self.storedScreenshot = screenshot
+        self.screenshotData = nil
+        
         self.url = url
+    }
+    
+    public init(fromDict dict: [String:String]) {
+        self.id = Int(dict["id"]!)!
+        self.width = Int(dict["width"]!)!
+        self.height = Int(dict["height"]!)!
+        self.duration = Int(dict["duration"]!)!
+        self.url = URL(string: dict["url"]!)!
+        self.screenshotData = nil
+        self.storedScreenshot = nil
+    }
+    
+    public var dict: [String: String] {
+        ["id": String(id),
+         "width": String(width),
+         "height": String(height),
+         "duration": String(duration),
+         "url": url.absoluteString]
     }
     
 }

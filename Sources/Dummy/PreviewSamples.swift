@@ -49,4 +49,5 @@ let previewItem = DummyItem(id: UUID(),
                             user: previewUser,
                             snippet: previewSnippet,
                             photo: previewPhoto,
-                            video: previewVideo)
+                            video: previewVideo,
+                            date: Date.recent())

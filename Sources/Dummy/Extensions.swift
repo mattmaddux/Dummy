@@ -56,3 +56,39 @@ extension Image {
     }
     
 }
+
+extension Date {
+    
+    static func recent() -> Date {
+        let nowSeconds = Date().timeIntervalSince1970
+        let oneMonthSeconds = 2592000.00
+        let oneMonthAgoSeconds = nowSeconds - oneMonthSeconds
+        return Date(timeIntervalSince1970: oneMonthAgoSeconds)
+    }
+    
+    static func recentDates(count: Int) -> [Date] {
+        var list = [Date]()
+        for _ in 0..<count {
+            list.append(Date.recent())
+        }
+        return list.sorted().reversed()
+    }
+    
+    public var simple: String {
+        let calendar = Calendar.current
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US")
+        
+        if calendar.isDateInToday(self) {
+            dateFormatter.dateFormat = "hh:mm a"
+            return dateFormatter.string(from: self)
+        } else if calendar.isDateInYesterday(self) {
+            return "Yesterday"
+        } else {
+            dateFormatter.dateFormat = "MM/dd/yyyy"
+            let string = dateFormatter.string(from: self)
+            return string
+        }
+    }
+    
+}
